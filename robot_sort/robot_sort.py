@@ -92,12 +92,61 @@ class SortingRobot:
         """
         return self._light == "ON"
 
+    def move_in_order(self, i):
+        self.swap_item()
+        self.move_right()
+        for n in range(i//2, len(self._list) - (i // 2) - 1):
+            other_item = self.compare_item()
+        if other_item == -1:
+            self.swap_item()
+            self.move_right()
+
+        elif other_item == 0:
+            self.move_right()
+        
+        elif other_item == 1:
+            while self.compare_item() != None:
+                self.move_left()
+            self.swap_item()
+            return
+        
+        # everything is already sorted and this now we will replace all the items
+        while self.compare_item() != None:
+            self.move_left()
+            self.swap_item()
+        self.set_light_on()
+    
+
     def sort(self):
         """
         Sort the robot's list.
-        """
-        # Fill this out
-        pass
+        """        
+        for i in range(len(self._list)):
+            if i > (len(self._list) // 2) and i % 2 == 0 and i > 4:
+                self.move_in_order(i)
+                if self.light_is_on() == True:
+                    return
+
+            if i % 2 == 0:
+                for x in range(i//2, len(self._list) - (i//2)-1):
+                    if self.compare_item() == -1 or self._item == None:
+                        self.swap_item()
+                    if self.can_move_right():
+                        self.move_right()
+                if self.compare_item() == 1:
+                    self.swap_item()
+            
+            if i % 2 != 0:
+                while self.compare_item() != None:
+                    other_Items = self.compare_item()
+                    if other_Items == 1:
+                        self.swap_item()
+                        self.move_left()
+                    elif other_Items < 1:
+                        self.move_left()
+
+                self.swap_item()
+                self.move_right()
 
 
 if __name__ == "__main__":
