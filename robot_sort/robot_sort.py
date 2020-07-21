@@ -92,61 +92,51 @@ class SortingRobot:
         """
         return self._light == "ON"
 
-    def move_in_order(self, i):
-        self.swap_item()
-        self.move_right()
-        for n in range(i//2, len(self._list) - (i // 2) - 1):
-            other_item = self.compare_item()
-        if other_item == -1:
-            self.swap_item()
-            self.move_right()
-
-        elif other_item == 0:
-            self.move_right()
-        
-        elif other_item == 1:
-            while self.compare_item() != None:
-                self.move_left()
-            self.swap_item()
-            return
-        
-        # everything is already sorted and this now we will replace all the items
-        while self.compare_item() != None:
-            self.move_left()
-            self.swap_item()
-        self.set_light_on()
     
-
     def sort(self):
         """
         Sort the robot's list.
-        """        
-        for i in range(len(self._list)):
-            if i > (len(self._list) // 2) and i % 2 == 0 and i > 4:
-                self.move_in_order(i)
-                if self.light_is_on() == True:
-                    return
+        """
+        # Start with the light on to  indicate that we are about to attempt to sort (if it needs to be sorted)
+        self.set_light_on() 
 
-            if i % 2 == 0:
-                for x in range(i//2, len(self._list) - (i//2)-1):
-                    if self.compare_item() == -1 or self._item == None:
-                        self.swap_item()
-                    if self.can_move_right():
-                        self.move_right()
-                if self.compare_item() == 1:
+        # If the light is on, it implies that a swap had to be initiated because the list was not sorted in proper order
+        while self.light_is_on(): 
+
+            # While moving right, initiate an item swap if either: line 109 and 110
+            while self.can_move_right():
+
+            # compare_item() returns None or 
+            # compare_item()'s held item's value is less -1
+                if self.compare_item() == -1 or self.compare_item() == None:   
                     self.swap_item()
-            
-            if i % 2 != 0:
-                while self.compare_item() != None:
-                    other_Items = self.compare_item()
-                    if other_Items == 1:
-                        self.swap_item()
-                        self.move_left()
-                    elif other_Items < 1:
-                        self.move_left()
-
-                self.swap_item()
+                
+                # Continue moving right once all above condition is met
                 self.move_right()
+
+            # If we reach the right AND compare_item() returns None because
+            # One or both held items are None
+            if self.compare_item() == None: 
+
+                # Turn off the light in order to break the loop
+                self.set_light_off()       
+                break
+
+
+            # While moving left, if compare.item() is not None
+            while self.can_move_left() and self.compare_item() is not None:
+
+                # Initiate an item swap if the held item's value is greater than the iteam in front of the robot.
+                if self.compare_item() == 1: 
+                    self.swap_item()
+        
+                # Continue moving left
+                self.move_left()
+
+                # Eventually, if we're moving left and encounter None, then everything to the left should already sorted. 
+                # The process should end automatically because compare.item() will no longer be returning a "not None" value.
+        
+        return self._time
 
 
 if __name__ == "__main__":

@@ -5,6 +5,8 @@
 a)
     This would be O(n) because n^2 === n
 
+    
+
 
 b)
 This would be Log(n) because j is doubling each round
